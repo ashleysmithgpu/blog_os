@@ -5,6 +5,7 @@
 
 extern crate rlibc;
 extern crate volatile;
+extern crate spin;
 
 mod vga_buffer;
 
@@ -12,7 +13,10 @@ mod vga_buffer;
 pub extern fn rust_main() {
     // ATTENTION: we have a very small stack and no guard page
 
-    vga_buffer::print_something();
+    use core::fmt::Write;
+
+    vga_buffer::WRITER.lock().write_str("Hello again");
+    write!(vga_buffer::WRITER.lock(), ", some numbers: {} {}", 42, 1.337);
 
     loop{}
 }
