@@ -19,10 +19,10 @@ extern crate alloc;
 #[macro_use]
 extern crate collections;
 
-
 #[macro_use]
 mod vga_buffer;
 mod memory;
+mod interrupts;
 
 #[no_mangle]
 pub extern "C" fn rust_main(multiboot_information_address: usize) {
