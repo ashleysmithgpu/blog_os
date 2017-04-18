@@ -42,11 +42,13 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
     // set up guard page and map the heap pages
     memory::init(boot_info);
 
-    use alloc::boxed::Box;
-    let heap_test = Box::new(42);
+    // initialize our IDT
+    interrupts::init();
+
+    // invoke a breakpoint exception
+    x86_64::instructions::interrupts::int3();
 
     println!("It did not crash!");
-
     loop {}
 }
 
