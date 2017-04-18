@@ -1,6 +1,7 @@
 #![feature(lang_items)]
 #![feature(const_fn)]
 #![feature(unique)]
+#![feature(alloc, collections)]
 #![no_std]
 
 extern crate rlibc;
@@ -10,6 +11,12 @@ extern crate multiboot2;
 #[macro_use]
 extern crate bitflags;
 extern crate x86_64;
+
+extern crate bump_allocator;
+extern crate alloc;
+#[macro_use]
+extern crate collections;
+
 
 #[macro_use]
 mod vga_buffer;
