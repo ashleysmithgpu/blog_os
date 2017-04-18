@@ -4,6 +4,7 @@ version = "0.1.0"
 dependencies = [
  "bitflags 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "hole_list_allocator 0.1.0",
+ "lazy_static 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "multiboot2 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "once 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rlibc 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
