@@ -2,6 +2,7 @@
 #![feature(const_fn)]
 #![feature(unique)]
 #![feature(alloc, collections)]
+#![feature(abi_x86_interrupt)]
 #![no_std]
 
 extern crate rlibc;
