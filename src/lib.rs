@@ -38,8 +38,25 @@ mod memory;
 
 mod interrupts;
 
+
+
+// Sys calls
+/*fn sys_call() {
+
+	println!("sys_call!");
+}*/
+
+
+
 #[no_mangle]
 pub extern "C" fn rust_main(multiboot_information_address: usize) {
+
+	for x in 0..500 {
+
+		println!("Hello World{}", x);
+	}
+
+
     // ATTENTION: we have a very small stack and no guard page
     vga_buffer::clear_screen();
     println!("Hello World{}", "!");
@@ -53,16 +70,123 @@ pub extern "C" fn rust_main(multiboot_information_address: usize) {
 
     // initialize our IDT
     interrupts::init(&mut memory_controller);
-    
+
+	use alloc::vec::Vec;
+	let usermodecode: Vec<u8> = vec![
+0x90,
+0x90,
+0x90,
+0x90,
+0x90,
+0x90,
+0x90,
+0x90,
+0x90,
+0x90,
+0x90,
+0x90,
+0x90,
+0x90,
+0xb0,
+0x37,
+0xc7,
+0x04,
+0x25,
+0x00,
+0x80,
+0x0b,
+0x00,
+0x45,
+0x4f,
+0x52,
+0x4f,
+0xc7,
+0x04,
+0x25,
+0x04,
+0x80,
+0x0b,
+0x00,
+0x52,
+0x4f,
+0x3a,
+0x4f,
+0xc7,
+0x04,
+0x25,
+0x08,
+0x80,
+0x0b,
+0x00,
+0x20,
+0x4f,
+0x20,
+0x4f,
+0x88,
+0x04,
+0x25,
+0x0a,
+0x80,
+0x0b,
+0x00,
+0xf4];
+
+	println!("Enabling syscalls");
+
+	enable_syscalls_bit();
+
+    println!("Doing sysret");
+
+	let x: i32 = usermodecode.as_ptr() as i32;
+
+//	x |= 800000000000000;
+
+	println!("x {:?}\n", x);
+
+	unsafe {
+	/*	asm!("mov $0, %rcx"
+			:
+			: "r"(usermodecode.as_ptr())
+			:
+			:
+			);*/
+
+		asm!(r"movq $$1073741824, %rcx");
+		/*:
+		: "r"(x)
+		: "rcx"
+		:);*/
+		asm!(r"sysretq" ::::); // TODO: why does this asm instruction seem backwards? 0x48070f48 should be 0x480f0748
+	}
+
+	/*
     fn stack_overflow() {
         stack_overflow(); // for each recursion, the return address is pushed
     }
 
     // trigger a stack overflow
-    stack_overflow();
+    stack_overflow();*/
 
     println!("It did not crash!");
     loop {}
+}
+
+/*fn setup_sys_calls() {
+    use x86_64::registers::msr::{IA32_STAR, IA32_LSTAR, wrmsr};
+
+    unsafe {
+        wrmsr(IA32_LSTAR, sys_call as u64);
+    }
+}*/
+
+fn enable_syscalls_bit() {
+    use x86_64::registers::msr::{IA32_EFER, rdmsr, wrmsr};
+
+    let syscall_bit = 1;
+    unsafe {
+        let efer = rdmsr(IA32_EFER);
+        wrmsr(IA32_EFER, efer | syscall_bit);
+    }
 }
 
 fn enable_nxe_bit() {

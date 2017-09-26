@@ -69,7 +69,7 @@ pub fn init(boot_info: &BootInformation) -> MemoryController {
     let heap_end_page = Page::containing_address(HEAP_START + HEAP_SIZE - 1);
 
     for page in Page::range_inclusive(heap_start_page, heap_end_page) {
-        active_table.map(page, paging::WRITABLE, &mut frame_allocator);
+        active_table.map(page, paging::WRITABLE | paging::USER_ACCESSIBLE, &mut frame_allocator);
     }
 
     //Init the heap

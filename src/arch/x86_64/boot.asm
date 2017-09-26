@@ -96,7 +96,8 @@ error:
 
 ; Throw error 0 if eax doesn't contain the Multiboot 2 magic value (0x36d76289).
 check_multiboot:
-    cmp eax, 0x36d76289
+	;cmp eax, 0x2BADB002; multiboot1
+    cmp eax, 0x36d76289; multiboot2
     jne .no_multiboot
     ret
 .no_multiboot:
